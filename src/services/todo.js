@@ -6,7 +6,7 @@ const getTodos = (user) => {
   return new Promise(async (resolve, reject) => {
     await todoModel
       .find({
-        status: { $ne: "disabled" },
+        status: { $ne: "deleted" },
         $or: [{ created_by_id: user?.id }, { updated_by_id: user?.id }],
       })
       .then((todos) => {
@@ -23,7 +23,7 @@ const getTodo = (user, id) => {
     await todoModel
       .findOne({
         _id: id,
-        status: { $ne: "disabled" },
+        status: { $ne: "deleted" },
         $or: [{ created_by_id: user?.id }, { updated_by_id: user?.id }],
       })
       .then((todo) => {
