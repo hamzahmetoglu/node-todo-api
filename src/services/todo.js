@@ -5,7 +5,10 @@ const todoValidation = require("../validations/todo");
 const getTodos = (user) => {
   return new Promise(async (resolve, reject) => {
     await todoModel
-      .find({ user_id: user?.id, status: { $ne: "disabled" } })
+      .find({
+        status: { $ne: "disabled" },
+        $or: [{ created_by_id: user?.id }, { updated_by_id: user?.id }],
+      })
       .then((todos) => {
         resolve(todos);
       })
@@ -18,7 +21,11 @@ const getTodos = (user) => {
 const getTodo = (user, id) => {
   return new Promise(async (resolve, reject) => {
     await todoModel
-      .findOne({ _id: id, user_id: user?.id, status: { $ne: "disabled" } })
+      .findOne({
+        _id: id,
+        status: { $ne: "disabled" },
+        $or: [{ created_by_id: user?.id }, { updated_by_id: user?.id }],
+      })
       .then((todo) => {
         if (todo) {
           resolve(todo);
@@ -65,8 +72,8 @@ const updateTodo = (user, todoId, todoData) => {
         await todoModel
           .findOne({
             _id: todoId,
-            user_id: user?.id,
             status: { $ne: "deleted" },
+            $or: [{ created_by_id: user?.id }, { updated_by_id: user?.id }],
           })
           .then(async (todo) => {
             if (todo) {
@@ -101,7 +108,11 @@ const updateTodo = (user, todoId, todoData) => {
 const deleteTodo = (user, todoId) => {
   return new Promise(async (resolve, reject) => {
     await todoModel
-      .findOne({ _id: todoId, user_id: user?.id, status: { $ne: "deleted" } })
+      .findOne({
+        _id: todoId,
+        status: { $ne: "deleted" },
+        $or: [{ created_by_id: user?.id }, { updated_by_id: user?.id }],
+      })
       .then(async (todo) => {
         if (todo) {
           todo.status = "deleted";
