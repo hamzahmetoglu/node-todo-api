@@ -1,8 +1,10 @@
 const todoService = require("../services/todo");
 
 const getTodos = async (req, res, next) => {
+  const { user } = req;
+
   await todoService
-    .getTodos()
+    .getTodos(user)
     .then((todos) => {
       res.json({ todos, total_count: todos.length });
     })
@@ -12,10 +14,11 @@ const getTodos = async (req, res, next) => {
 };
 
 const getTodo = async (req, res, next) => {
+  const { user } = req;
   const { todoId } = req.params;
 
   await todoService
-    .getTodo(todoId)
+    .getTodo(user, todoId)
     .then((todo) => {
       res.json(todo);
     })
@@ -25,8 +28,11 @@ const getTodo = async (req, res, next) => {
 };
 
 const createTodo = async (req, res, next) => {
+  const { user } = req;
+  const body = req.body;
+
   await todoService
-    .createTodo(req.body)
+    .createTodo(user, body)
     .then((todo) => {
       res.json(todo);
     })
@@ -36,11 +42,12 @@ const createTodo = async (req, res, next) => {
 };
 
 const updateTodo = async (req, res, next) => {
+  const { user } = req;
   const { todoId } = req.params;
   const body = req.body;
 
   await todoService
-    .updateTodo(todoId, body)
+    .updateTodo(user, todoId, body)
     .then((todo) => {
       res.json(todo);
     })
@@ -50,10 +57,11 @@ const updateTodo = async (req, res, next) => {
 };
 
 const deleteTodo = async (req, res, next) => {
+  const { user } = req;
   const { todoId } = req.params;
 
   await todoService
-    .deleteTodo(todoId)
+    .deleteTodo(user, todoId)
     .then((todo) => {
       res.json(todo);
     })

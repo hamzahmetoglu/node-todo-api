@@ -13,6 +13,15 @@ const schema = new Schema(
       enum: ["deleted", "active", "completed"],
       default: "active",
     },
+
+    created_by_id: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
+    updated_by_id: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
   {
     versionKey: false,
@@ -23,6 +32,7 @@ const schema = new Schema(
     toJSON: {
       transform: function (doc, ret) {
         ret.id = ret._id;
+        delete ret.user_id;
         delete ret._id;
       },
     },
